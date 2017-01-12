@@ -165,11 +165,48 @@ Matrix3 Matrix3::rotation(const Axis &axis, const int &angle)
 /// <param name="dx">translation in x</param>
 /// <param name="dy">translation in y</param>
 /// <returns>the translation matrix</returns>
-Matrix3 Matrix3::translate(const double &dx, const double &dy)
+Vector3 Matrix3::translate(Vector3& v,float& offset, Axis& axis )
 {
-	return Matrix3( 1,0,dx,
-					0,1,dy,
-					0,0,1);
+	//return Matrix3( 1,0,dx,
+	//				0,1,dy,
+	//				0,0,1);
+	float row1[4];
+	float row2[4];
+	float row3[4];
+	float row4[4];
+
+	switch (axis)
+	{
+	case Matrix3::Axis::X:
+		row1[0] = 1; row1[1] = 0; row1[2] = 0; row1[3] = offset;
+		row2[0] = 0; row2[1] = 1; row2[2] = 0; row2[3] = 0;
+		row3[0] = 0; row3[1] = 0; row3[2] = 1; row3[3] = 0;
+		row4[0] = 0; row4[1] = 0; row4[2] = 0; row4[3] = 1;
+		break;
+	case Matrix3::Axis::Y:
+		row1[0] = 1; row1[1] = 0; row1[2] = 0; row1[3] = 0;
+		row2[0] = 0; row2[1] = 1; row2[2] = 0; row2[3] = offset;
+		row3[0] = 0; row3[1] = 0; row3[2] = 1; row3[3] = 0;
+		row4[0] = 0; row4[1] = 0; row4[2] = 0; row4[3] = 1;
+		break;
+	case Matrix3::Axis::Z:
+		row1[0] = 1; row1[1] = 0; row1[2] = 0; row1[3] = 0;
+		row2[0] = 0; row2[1] = 1; row2[2] = 0; row2[3] = 0;
+		row3[0] = 0; row3[1] = 0; row3[2] = 1; row3[3] = offset;
+		row4[0] = 0; row4[1] = 0; row4[2] = 0; row4[3] = 1;
+		break;
+	default:
+		row1[0] = 1; row1[1] = 0; row1[2] = 0; row1[3] = 0;
+		row2[0] = 0; row2[1] = 1; row2[2] = 0; row2[3] = 0;
+		row3[0] = 0; row3[1] = 0; row3[2] = 1; row3[3] = 0;
+		row4[0] = 0; row4[1] = 0; row4[2] = 0; row4[3] = 1;
+		break;
+	}
+	float ans[4];
+	ans[0] = ((row1[0] * v.getX()) + (row1[1] * v.getY()) + (row1[2] * v.getZ()) + (row1[3] * 1));
+	ans[1] = ((row2[0] * v.getX()) + (row2[1] * v.getY()) + (row2[2] * v.getZ()) + (row2[3] * 1));
+	ans[2] = ((row3[0] * v.getX()) + (row3[1] * v.getY()) + (row3[2] * v.getZ()) + (row3[3] * 1));
+	return Vector3(ans[0],ans[1],ans[2]);
 }
 /// <summary>
 /// Returns the scale matrix

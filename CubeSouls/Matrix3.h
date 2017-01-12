@@ -21,7 +21,7 @@ public:
 	double determinant() const;
 	static Matrix3 inverse(const Matrix3&);
 	static Matrix3 rotation(const Axis&, const int&);
-	static Matrix3 translate(const double&, const double&);
+	static Vector3 translate(Vector3&,float&,Axis&);
 	static Matrix3 scale(const double&, const double&, const double& dz = 1);
 private:
 	double m_a11;
