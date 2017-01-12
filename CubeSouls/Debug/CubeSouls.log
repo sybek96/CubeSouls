@@ -1,0 +1,12 @@
+﻿  Vector3.cpp
+  Matrix3.cpp
+  Main.cpp
+  Game.cpp
+c:\users\c00206244\downloads\cubesouls\game.cpp(137): warning C4305: '=': truncation from 'double' to 'float'
+c:\users\c00206244\downloads\cubesouls\game.cpp(141): warning C4305: '=': truncation from 'double' to 'float'
+c:\users\c00206244\downloads\cubesouls\game.cpp(283): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\c00206244\downloads\cubesouls\game.cpp(284): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\c00206244\downloads\cubesouls\game.cpp(285): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+  Generating Code...
+  CubeSouls.vcxproj -> C:\Users\c00206244\Downloads\CubeSouls\Debug\CubeSouls.exe
+  CubeSouls.vcxproj -> C:\Users\c00206244\Downloads\CubeSouls\Debug\CubeSouls.pdb (Partial PDB)
