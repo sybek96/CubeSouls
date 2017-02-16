@@ -1,7 +1,7 @@
 # README #
 
-This is LAB 11 which is the final lab within the lab series. Over the past few months we've created many different applications. This project defines an Cube, Vertex and Fragment Shaders, Texture and uses the GLM Math Library to perform transformations. As such its a completed 3D cube project with rotations.
-Modify this example and experiment with rotate, scale and translate functions (see https://glm.g-truc.net/0.9.2/api/a00245.html#ga4683c446c8432476750ade56f2537397)
+This is a project that uses OpenGL and SFML as well as the GLEW and GLM libraries. It is mainly showcasing the ability to draw a cube in 3D and be able to manipulate said cube turning it into a game
+CubeSouls is a simple game where waves of cubes fly towards the player cube. The players objective is to avoid the oncoming cubes via arrow keys or A/D keys. 
 
 
 ### What is this repository for? ###
@@ -27,23 +27,6 @@ http://www.sfml-dev.org/files/SFML-2.3.2-windows-vc14-32-bit.zip "SFML-2.3.2-win
 * Select a project default target `x86` when running executable
 * If the project builds but does not `xcopy` the required dll's try moving your project to a directory you have full access to, see http://tinyurl.com/SFMLStarter for a guide on post build events.
 
-### Cloning Repository ###
-* Run GitBash and type the Follow commands into GitBash
-
-* Check Present Working Directory `pwd`
-
-* Change to the C drive or other drive `cd c:`
-
-* Make a projects Directory `mkdir projects`
-
-* Change to the projects directory by `cd projects`
-
-* Clone the project `git clone https://MuddyGames@bitbucket.org/MuddyGames/gameplay-programming-i-lab11.git`
-
-* Change to the project directory `cd projects gameplay-programming-i-lab11`
-
-* List files that were downloaded `ls`
-
 ### Who do I talk to? ###
 
-* philip.bourke@itcarlow.ie
+* sybek96@interia.pl

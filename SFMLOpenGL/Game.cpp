@@ -12,7 +12,8 @@ const std::string filename = "neoncube.png";
 //const std::string filename = "texture_2.tga";
 //const std::string filename = "uvtemplate.tga";
 
-
+//COLORS
+static sf::Vector3f const WHITE = sf::Vector3f(255.0f, 255.0f, 255.0f);
 
 
 /// <summary>
@@ -32,14 +33,18 @@ Game::Game(sf::ContextSettings settings)
 		glm::vec3(0.0f, 1.0f, 0.0f)	// 0.0f, 1.0f, 0.0f Look Down and 0.0f, -1.0f, 0.0f Look Up
 	))
 	, m_playerCube(new PlayerCube(1.0f, 5.0f, 5.0f, m_view))
-	, m_road(new Road(0.0f,0.0f,5.0f,m_view))
 	, m_clearWalls(false)
 	, m_lives(2)
+	, m_currentGameState(GameState::SPLASH_SCREEN)
 	, m_wallSpeed(50.0f)
 	, m_spawning(true)
 	, m_distance(0)
+	, m_secondCounterSplash(0)
+	, m_alphaLogo(0)
+	, m_alphaSplashUp(true)
+	, m_screenCenter(0,0)
 {
-
+	m_screenCenter = sf::Vector2f(window.getSize().x / 2, window.getSize().y / 2);
 	auto seed = time(nullptr);
 	DEBUG_MSG("Generating random seed:\n   - Seed: " + std::to_string(seed) + "\n");
 	srand(seed);
@@ -49,7 +54,6 @@ Game::Game(sf::ContextSettings settings)
 		glm::vec3(m_playerCube->getPosLeft().x + 1, 0, 0),	// Camera looking at centre of player
 		glm::vec3(0.0f, 1.0f, 0.0f)	// 0.0f, 1.0f, 0.0f Look Down and 0.0f, -1.0f, 0.0f Look Up
 	);
-	m_road.reset(new Road(0.0f, 0.0f, 5.0f, m_view));
 }
 
 /// <summary>
@@ -106,25 +110,42 @@ void Game::run()
 void Game::initialize()
 {
 	window.pushGLStates();
-	if (!m_font.loadFromFile("./SNAP____.TTF"))
+	if (!m_font.loadFromFile("./SNAP____.TTF")) //loading the font
 	{
-		std::cout << "Error loading file" << std::endl;
+		std::string s("Error loading font");
+		throw std::exception(s.c_str());
 	}
-	if (!m_backgroundTexture.loadFromFile("./background1.png"))
+	if (!m_backgroundTexture.loadFromFile("./background1.png")) //loading background texture
 	{
-		std::cout << "Error loading background image" << std::endl;
+		std::string s("Error loading background texture");
+		throw std::exception(s.c_str());
 	}
-	if (!m_heartTexture.loadFromFile("./heart1.png"))
+	if (!m_heartTexture.loadFromFile("./heart1.png")) //loading heart texture
 	{
-		std::cout << "error loading heart texture" << std::endl;
+		std::string s("Error loading heart texture");
+		throw std::exception(s.c_str());
 	}
+	if (!m_SplashLogoTexture.loadFromFile("./Logo.png")) //loading logo texture
+	{
+		std::string s("Error loading logo texture");
+		throw std::exception(s.c_str());
+	}
+	//setting up hearts
 	m_heart1.setTexture(m_heartTexture);
 	m_heart2.setTexture(m_heartTexture);
 	m_heart1.setPosition(sf::Vector2f(500.0f, 20.0f));
 	m_heart1.setScale(0.25f, 0.25f);
 	m_heart2.setPosition(sf::Vector2f(550.0f, 20.0f));
 	m_heart2.setScale(0.25f, 0.25f);
+	//making the background texture bind to background sprite
 	m_backgroundSprite.setTexture(m_backgroundTexture);
+	//Dealing with splash screen
+	m_splashLogoSprite.setTexture(m_SplashLogoTexture);
+	m_splashLogoSprite.setOrigin(m_splashLogoSprite.getGlobalBounds().width / 2, m_splashLogoSprite.getGlobalBounds().height / 2);
+	m_splashLogoSprite.setPosition(m_screenCenter);
+	m_splashLogoSprite.setColor(sf::Color(0.0f, 0.0f, 0.0f, m_alphaLogo));
+	m_splashLogoSprite.setScale(0.8f, 0.8f);
+	m_distanceText.setFont(m_font);
 	window.popGLStates();
 	isRunning = true;
 	DEBUG_MSG(glGetString(GL_VENDOR));
@@ -212,6 +233,33 @@ void Game::update(double dt)
 #endif
 	switch (m_currentGameState)
 	{
+	case Game::GameState::SPLASH_SCREEN:
+		if (m_alphaSplashUp) //increse alpha while below 254 then decrease it to below 1 (fade in and out effect)
+		{
+			m_alphaLogo += 0.7f;
+			if (m_alphaLogo > 254)
+			{
+				m_alphaSplashUp = false;
+			}
+		}
+		else
+		{
+			if (m_alphaLogo > 1)
+			{
+				m_alphaLogo -= 0.9f;
+			}
+		}
+		m_splashLogoSprite.setColor(sf::Color(WHITE.x, WHITE.y, WHITE.z, m_alphaLogo));
+		m_secondCounterSplash += dt * 100; //add time since last update
+		if (m_secondCounterSplash >= 700) //check if 7 sec is up switch to title
+		{
+			m_currentGameState = GameState::SPAWNING;
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))	//alternatively press space to skip splash screen
+		{
+			m_currentGameState = GameState::SPAWNING;
+		}
+		break;
 	case Game::GameState::SPAWNING:
 		if (m_playerCube->getPosLeft().y > 0)
 		{
@@ -282,47 +330,115 @@ void Game::render()
 #if (DEBUG >= 2)
 	DEBUG_MSG("Render Loop...");
 #endif
-
-	//std::cout << m_playerCube->getPosLeft().x << std::endl;
-
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	glClearColor(0.25, 0.5, 0.8, 0.0f);
-
-	window.pushGLStates();
-
-	sf::Text text("Distance: " + std::to_string(static_cast<int>(m_distance)), m_font);
-
-	text.setColor(sf::Color(255, 255, 255, 170));
-	text.setPosition(100.f, 20.f);
-
-	window.draw(m_backgroundSprite);
-	window.draw(text);
-	if (m_lives > 1)
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	switch (m_currentGameState)
 	{
-		window.draw(m_heart2);
-	}
-	if (m_lives > 0)
-	{
-		window.draw(m_heart1);
-	}
-	// Restore OpenGL render states
-	// https://www.sfml-dev.org/documentation/2.0/classsf_1_1RenderTarget.php#a8d1998464ccc54e789aaf990242b47f7
+	case Game::GameState::SPLASH_SCREEN:
+		window.pushGLStates();
+		window.draw(m_backgroundSprite);
+		window.draw(m_splashLogoSprite);
+		window.popGLStates();
+		m_playerCube->render(m_ids);
+		break;
+	case Game::GameState::SPAWNING:
+		window.pushGLStates();
+		m_distanceText.setString("Distance: " + std::to_string(static_cast<int>(m_distance)));
 
-	window.popGLStates();
+		m_distanceText.setColor(sf::Color(255, 255, 255, 170));
+		m_distanceText.setPosition(100.f, 20.f);
 
-	//m_road->render(m_idsRoad);
+		window.draw(m_backgroundSprite);
+		window.draw(m_distanceText);
+		if (m_lives > 1)
+		{
+			window.draw(m_heart2);
+		}
+		if (m_lives > 0)
+		{
+			window.draw(m_heart1);
+		}
+		// Restore OpenGL render states
+		// https://www.sfml-dev.org/documentation/2.0/classsf_1_1RenderTarget.php#a8d1998464ccc54e789aaf990242b47f7
 
-	//m_cube.render();
-	for (auto& cube : m_cubes)
-	{
-		cube->render(m_ids);
+		window.popGLStates();
+
+		//m_road->render(m_idsRoad);
+
+		//m_cube.render();
+		for (auto& cube : m_cubes)
+		{
+			cube->render(m_ids);
+		}
+		m_playerCube->render(m_ids);
+		break;
+	case Game::GameState::PLAYING:
+		window.pushGLStates();
+		m_distanceText.setString("Distance: " + std::to_string(static_cast<int>(m_distance)));
+
+		m_distanceText.setColor(sf::Color(255, 255, 255, 170));
+		m_distanceText.setPosition(100.f, 20.f);
+
+		window.draw(m_backgroundSprite);
+		window.draw(m_distanceText);
+		if (m_lives > 1)
+		{
+			window.draw(m_heart2);
+		}
+		if (m_lives > 0)
+		{
+			window.draw(m_heart1);
+		}
+		// Restore OpenGL render states
+		// https://www.sfml-dev.org/documentation/2.0/classsf_1_1RenderTarget.php#a8d1998464ccc54e789aaf990242b47f7
+
+		window.popGLStates();
+
+		//m_road->render(m_idsRoad);
+
+		//m_cube.render();
+		for (auto& cube : m_cubes)
+		{
+			cube->render(m_ids);
+		}
+		m_playerCube->render(m_ids);
+		break;
+	case Game::GameState::OVER:
+		window.pushGLStates();
+		m_distanceText.setString("Distance: " + std::to_string(static_cast<int>(m_distance)));
+
+		m_distanceText.setColor(sf::Color(255, 255, 255, 170));
+		m_distanceText.setPosition(100.f, 20.f);
+
+		window.draw(m_backgroundSprite);
+		window.draw(m_distanceText);
+		if (m_lives > 1)
+		{
+			window.draw(m_heart2);
+		}
+		if (m_lives > 0)
+		{
+			window.draw(m_heart1);
+		}
+		// Restore OpenGL render states
+		// https://www.sfml-dev.org/documentation/2.0/classsf_1_1RenderTarget.php#a8d1998464ccc54e789aaf990242b47f7
+
+		window.popGLStates();
+
+		//m_road->render(m_idsRoad);
+
+		//m_cube.render();
+		for (auto& cube : m_cubes)
+		{
+			cube->render(m_ids);
+		}
+		m_playerCube->render(m_ids);
+		break;
+	default:
+		break;
 	}
-	m_playerCube->render(m_ids);
-	
 	window.display();
-
-
 }
 
 /// <summary>

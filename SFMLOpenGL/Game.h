@@ -27,7 +27,6 @@
 #include "IDs.h"
 #include "WallCube.h"
 #include "PlayerCube.h"
-#include "Road.h"
 
 class Game
 {
@@ -69,7 +68,7 @@ public:
 	void restartGame();
 private:
 	//enum of gamestates
-	enum class GameState{SPAWNING,PLAYING,OVER};
+	enum class GameState{ SPLASH_SCREEN, TITLE_SCREEN,SPAWNING,PLAYING,OVER};
 	
 	//the main game window
 	sf::RenderWindow window;
@@ -134,9 +133,6 @@ private:
 	//unique pointer to the player cube
 	std::unique_ptr<PlayerCube> m_playerCube;
 
-	//unique pointer to the road
-	std::unique_ptr<Road> m_road;
-
 	//A clear walls bool
 	bool m_clearWalls;
 
@@ -144,7 +140,7 @@ private:
 	int m_lives;
 
 	//the current game state
-	GameState m_currentGameState = GameState::SPAWNING;
+	GameState m_currentGameState = GameState::SPLASH_SCREEN;
 
 	//speed of walls
 	float m_wallSpeed;
@@ -173,9 +169,26 @@ private:
 	//heart 2 srtite
 	sf::Sprite m_heart2;
 
-	//game over text
-	
+	//the splash logo texture
+	sf::Texture m_SplashLogoTexture;
 
+	//splash logo sprite
+	sf::Sprite m_splashLogoSprite;
+
+	//the splash screen counter
+	sf::Int32 m_secondCounterSplash;
+
+	//used for alpha of logo in splash screen
+	float m_alphaLogo;		
+
+	//to check if alpha to be increased (splash screen)
+	bool m_alphaSplashUp;		
+
+	//screen center
+	sf::Vector2f m_screenCenter;		
+
+	//the distance that player travelled
+	sf::Text m_distanceText;
 };
 
 #endif
