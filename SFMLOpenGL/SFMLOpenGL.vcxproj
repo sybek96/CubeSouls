@@ -70,7 +70,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SFML_SDK)\include;$(GLEW_SDK)\include;$(GLM_SDK);$(ProjectDir);$(IncludePath)</IncludePath>
+    <IncludePath>$(SFML_SDK)\include;$(GLM_SDK);$(GLEW_SDK)\include;$(ProjectDir);$(IncludePath)</IncludePath>
     <LibraryPath>$(SFML_SDK)\lib;$(GLEW_SDK)\lib\Release\Win32;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -179,7 +179,9 @@
     <Text Include="VertexShader.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="background.png" />
     <Image Include="minecraft.tga" />
+    <Image Include="neoncube1.png" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="SNAP____.TTF" />

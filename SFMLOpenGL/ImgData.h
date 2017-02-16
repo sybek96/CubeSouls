@@ -1,4 +1,8 @@
 #pragma once
+
+/// <summary>
+/// Image data struct
+/// </summary>
 struct ImgData
 {
 	ImgData() :

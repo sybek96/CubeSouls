@@ -7,6 +7,13 @@ const GLuint Road::indices[Road::s_INDICES_NR]=
 	2u, 3u, 0u
 };
 
+/// <summary>
+/// Constructor
+/// </summary>
+/// <param name="xOffset"></param>
+/// <param name="yOffset"></param>
+/// <param name="zOffset"></param>
+/// <param name="view"></param>
 Road::Road(float xOffset, float yOffset, float zOffset, const glm::mat4 & view)
 	: m_view(glm::lookAt(
 		glm::vec3(2.0f, 4.0f, 10.f),
@@ -30,11 +37,17 @@ Road::Road(float xOffset, float yOffset, float zOffset, const glm::mat4 & view)
 	m_mvp = m_projection * m_view * m_model;
 }
 
-
+/// <summary>
+/// Destructor
+/// </summary>
 Road::~Road()
 {
 }
 
+/// <summary>
+/// Render
+/// </summary>
+/// <param name="ids"></param>
 void Road::render(const IDs & ids)
 {
 	//glDisable(GL_DEPTH_TEST);
@@ -72,5 +85,4 @@ void Road::render(const IDs & ids)
 	glDisableVertexAttribArray(ids.m_colorID);
 	glDisableVertexAttribArray(ids.m_uvID);
 
-	//glEnable(GL_DEPTH_TEST);
 }

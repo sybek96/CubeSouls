@@ -2,6 +2,9 @@
 #define _IDs
 #include <GL\glew.h>
 
+/// <summary>
+/// A struct of ids
+/// </summary>
 struct IDs
 {
 	IDs()

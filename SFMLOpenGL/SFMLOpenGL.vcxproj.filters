@@ -81,6 +81,12 @@
     <Image Include="minecraft.tga">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="background.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="neoncube1.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Font Include="SNAP____.TTF">

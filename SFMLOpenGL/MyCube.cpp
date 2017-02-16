@@ -175,6 +175,10 @@ static const GLuint indices[] =
 	22, 23, 20
 };
 
+/// <summary>
+/// Default constructor
+/// </summary>
+/// <param name="view"></param>
 MyCube::MyCube(const glm::mat4 & view)
 	: m_view(view)
 	, m_xOffset(0)
@@ -184,6 +188,13 @@ MyCube::MyCube(const glm::mat4 & view)
 {
 }
 
+/// <summary>
+/// overloaded constructor
+/// </summary>
+/// <param name="xOffset"></param>
+/// <param name="yOffset"></param>
+/// <param name="zOffset"></param>
+/// <param name="view"></param>
 MyCube::MyCube(float xOffset, float yOffset, float zOffset,const glm::mat4 & view) 
 	: m_view(view)
 	, m_xOffset(xOffset)
@@ -200,9 +211,6 @@ MyCube::MyCube(float xOffset, float yOffset, float zOffset,const glm::mat4 & vie
 		0.1f,					// Display Range Min : 0.1f unit
 		100.0f					// Display Range Max : 100.0f unit
 	);
-
-
-
 	// Model matrix
 	model = glm::mat4(
 		1.0f					// Identity Matrix
@@ -210,19 +218,32 @@ MyCube::MyCube(float xOffset, float yOffset, float zOffset,const glm::mat4 & vie
 	model = glm::translate(model, glm::vec3(m_xOffset, m_yOffset, m_zOffset));
 }
 
-
+/// <summary>
+/// destructor
+/// </summary>
 MyCube::~MyCube()
 {
 }
 
+/// <summary>
+/// update
+/// </summary>
+/// <param name="dt"></param>
 void MyCube::update(double dt)
 {
 	mvp = projection * m_view * model;
 }
 
-
+/// <summary>
+/// Render
+/// </summary>
+/// <param name="ids"></param>
 void MyCube::render(const IDs & ids)
 {
+	// Rebind Buffers and then set SubData
+	glBindBuffer(GL_ARRAY_BUFFER, ids.m_vbo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ids.m_vib);
+
 	glUseProgram(ids.m_progID);
 	//VBO Data....vertices, colors and UV's appended
 	glBufferSubData(GL_ARRAY_BUFFER, 0, 3 * VERTICES * sizeof(GLfloat), vertices);
@@ -254,10 +275,9 @@ void MyCube::render(const IDs & ids)
 	glDisableVertexAttribArray(ids.m_colorID);
 	glDisableVertexAttribArray(ids.m_uvID);
 
-}
+	// Unbind Buffers (Resets OpenGL States...important step)
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-//bool MyCube::getActive() const
-//{
-//	return m_active;
-//}
+}
 
