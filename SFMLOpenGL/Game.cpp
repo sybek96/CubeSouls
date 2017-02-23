@@ -130,6 +130,8 @@ void Game::initialize()
 		std::string s("Error loading logo texture");
 		throw std::exception(s.c_str());
 	}
+	m_distanceText.setColor(sf::Color(255, 255, 255, 170));
+	m_distanceText.setPosition(100.f, 20.f);
 	//setting up hearts
 	m_heart1.setTexture(m_heartTexture);
 	m_heart2.setTexture(m_heartTexture);
@@ -301,6 +303,7 @@ void Game::update(double dt)
 		{
 			m_currentGameState = GameState::OVER;
 		}
+		m_distanceText.setString("Distance: " + std::to_string(static_cast<int>(m_distance)));
 		break;
 	case Game::GameState::OVER:
 		for (auto& cube : m_cubes) //update all walls
@@ -308,8 +311,10 @@ void Game::update(double dt)
 			cube->update(dt);
 		}
 		m_timetospawn += dt;
-		if (m_timetospawn > 3.0f)
+		if (m_timetospawn > 3.5f)
 		{
+			m_distanceText.setString("Distance: " + std::to_string(static_cast<int>(m_distance)) + "\nPress space to restart");
+			m_distanceText.setPosition(m_screenCenter.x - 160.0f, m_screenCenter.y - 50.0f);
 			m_playerCube->update(dt);
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
@@ -344,10 +349,6 @@ void Game::render()
 		break;
 	case Game::GameState::SPAWNING:
 		window.pushGLStates();
-		m_distanceText.setString("Distance: " + std::to_string(static_cast<int>(m_distance)));
-
-		m_distanceText.setColor(sf::Color(255, 255, 255, 170));
-		m_distanceText.setPosition(100.f, 20.f);
 
 		window.draw(m_backgroundSprite);
 		window.draw(m_distanceText);
@@ -364,9 +365,6 @@ void Game::render()
 
 		window.popGLStates();
 
-		//m_road->render(m_idsRoad);
-
-		//m_cube.render();
 		for (auto& cube : m_cubes)
 		{
 			cube->render(m_ids);
@@ -375,10 +373,6 @@ void Game::render()
 		break;
 	case Game::GameState::PLAYING:
 		window.pushGLStates();
-		m_distanceText.setString("Distance: " + std::to_string(static_cast<int>(m_distance)));
-
-		m_distanceText.setColor(sf::Color(255, 255, 255, 170));
-		m_distanceText.setPosition(100.f, 20.f);
 
 		window.draw(m_backgroundSprite);
 		window.draw(m_distanceText);
@@ -390,14 +384,7 @@ void Game::render()
 		{
 			window.draw(m_heart1);
 		}
-		// Restore OpenGL render states
-		// https://www.sfml-dev.org/documentation/2.0/classsf_1_1RenderTarget.php#a8d1998464ccc54e789aaf990242b47f7
-
 		window.popGLStates();
-
-		//m_road->render(m_idsRoad);
-
-		//m_cube.render();
 		for (auto& cube : m_cubes)
 		{
 			cube->render(m_ids);
@@ -406,11 +393,6 @@ void Game::render()
 		break;
 	case Game::GameState::OVER:
 		window.pushGLStates();
-		m_distanceText.setString("Distance: " + std::to_string(static_cast<int>(m_distance)));
-
-		m_distanceText.setColor(sf::Color(255, 255, 255, 170));
-		m_distanceText.setPosition(100.f, 20.f);
-
 		window.draw(m_backgroundSprite);
 		window.draw(m_distanceText);
 		if (m_lives > 1)
@@ -425,10 +407,6 @@ void Game::render()
 		// https://www.sfml-dev.org/documentation/2.0/classsf_1_1RenderTarget.php#a8d1998464ccc54e789aaf990242b47f7
 
 		window.popGLStates();
-
-		//m_road->render(m_idsRoad);
-
-		//m_cube.render();
 		for (auto& cube : m_cubes)
 		{
 			cube->render(m_ids);
@@ -629,6 +607,7 @@ void Game::spawnCubes()
 
 /// <summary>
 /// Restart the game
+/// reset all variables to initial values
 /// </summary>
 void Game::restartGame()
 {
@@ -645,5 +624,7 @@ void Game::restartGame()
 	);
 	m_timetospawn = 0.0f;
 	m_distance = 0;
+	m_distanceText.setPosition(100.f, 20.f);
+	m_distanceText.setString("Distance: " + std::to_string(static_cast<int>(m_distance)));
 }
 
